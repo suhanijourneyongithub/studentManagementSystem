@@ -12,10 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 
 public class StudentModel {
-    @Id
+    @Id //to make id a primary key
     private String id;
     private String name;
     private int age;
     private String email;
-
 }
