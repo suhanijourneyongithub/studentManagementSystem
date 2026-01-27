@@ -35,4 +35,11 @@ public class StudentService {
         return repository.save(existingStudent);
     }
     //Delete
+    public void deleteStudent(String id){
+        if(!repository.existsById(id)){
+            throw new RuntimeException("No Student Found");
+        }
+        repository.deleteById(id);
+    }
+
 }
