@@ -1,7 +1,10 @@
 package com.example.day3_sms.controller;
 
+import com.example.day3_sms.dto.StudentRequestDto;
+import com.example.day3_sms.dto.StudentResponseDto;
 import com.example.day3_sms.model.StudentModel;
 import com.example.day3_sms.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,19 +19,22 @@ public class StudentController {
 
     //Create function's API
     @PostMapping("/addStudent")
-    public StudentModel addStudent(@RequestBody StudentModel student){
+    public StudentResponseDto addStudent(@Valid @RequestBody StudentRequestDto student){
         return service.addStudent(student);
     }
+
     //Read function's API
     @GetMapping("/students")
-    public List<StudentModel> getStudents(){
-        return service.getStudents();
+    public List<StudentResponseDto> getStudents(){
+        return service.getAllStudents();
     }
+
     //UpdateByID
     @PutMapping("/update/{id}")
-    public StudentModel updateStudent(@PathVariable String id, @RequestBody StudentModel student){
+    public StudentResponseDto updateStudent(@Valid @PathVariable String id,@Valid @RequestBody StudentRequestDto student){
         return service.updateStudent(id, student);
     }
+
     //DeleteByID
     @DeleteMapping("/delete/{id}")
     public String deleteStudent(@PathVariable String id){
@@ -36,3 +42,9 @@ public class StudentController {
         return "Student deleted successfully";
     }
 }
+
+
+/*
+WORK FLOW
+Controller -> service -> dto -> model
+*/

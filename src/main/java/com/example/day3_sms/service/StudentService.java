@@ -1,5 +1,8 @@
 package com.example.day3_sms.service;
 
+import com.example.day3_sms.dto.StudentRequestDto;
+import com.example.day3_sms.dto.StudentResponseDto;
+import com.example.day3_sms.exception.StudentNotFoundException;
 import com.example.day3_sms.model.StudentModel;
 import com.example.day3_sms.repository.StudentRepo;
 import org.springframework.stereotype.Service;
@@ -17,27 +20,75 @@ public class StudentService {
     //CRUD
 
     //Create
-    public StudentModel addStudent(StudentModel student){
-        return repository.save(student);
+     /*public StudentModel addStudent(StudentModel student){
+       return repository.save(student);
+    }*/
+    public StudentResponseDto addStudent(StudentRequestDto dto){
+        StudentModel student = new StudentModel();
+        student.setName(dto.getName());
+        student.setAge(dto.getAge());
+        student.setEmail(dto.getEmail());
+
+        StudentModel saved = repository.save(student);
+
+        return new StudentResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getAge(),
+                saved.getEmail()
+        );
     }
+    /*
+    why two objects for addStudent
+    first one is for database
+    and second one is for client / responseDto
+    */
+
     //Read
-    public List<StudentModel> getStudents(){
+    /*public List<StudentModel> getStudents(){
         return repository.findAll();
+    }*/
+    public List<StudentResponseDto> getAllStudents(){
+        return repository.findAll()
+                .stream()
+                .map(s -> new StudentResponseDto(
+                        s.getId(),
+                        s.getName(),
+                        s.getAge(),
+                        s.getEmail()
+                )).toList();
+    }
+    /*
+    hmne findAll ke alawa .stream() and .map() kyu use kra
+    kyuki
+    hmara function list return kar skti h studentResponseDto type ki
+    but
+    findAll return krta hai List StudentModel type ki
+    to hum har ek element ko StudentResponseDto me convert krenge
+     */
+
+    //Update
+    public StudentResponseDto updateStudent(String id, StudentRequestDto dto){
+        StudentModel existingStudent = repository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("No Student Found"));
+        existingStudent.setName(dto.getName());
+        existingStudent.setAge(dto.getAge());
+        existingStudent.setEmail(dto.getEmail());
+
+        StudentModel saved = repository.save(existingStudent);
+
+        return new StudentResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getAge(),
+                saved.getEmail()
+        );
     }
 
-    //Update Name
-    public StudentModel updateStudent(String id, StudentModel student){
-        StudentModel existingStudent = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No Student Found"));
-        existingStudent.setName(student.getName());
-        existingStudent.setAge(student.getAge());
-        existingStudent.setEmail(student.getEmail());
-        return repository.save(existingStudent);
-    }
     //Delete
     public void deleteStudent(String id){
         if(!repository.existsById(id)){
-            throw new RuntimeException("No Student Found");
+            throw new StudentNotFoundException("No Student Found");
         }
         repository.deleteById(id);
     }
