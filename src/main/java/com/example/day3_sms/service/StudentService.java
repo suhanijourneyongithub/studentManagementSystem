@@ -8,6 +8,7 @@ import com.example.day3_sms.repository.StudentRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudentService {
@@ -93,4 +94,29 @@ public class StudentService {
         repository.deleteById(id);
     }
 
+    public StudentResponseDto patchStudent(String id, Map<String, Object> updates) {
+        StudentModel student = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        if (updates.containsKey("name")) {
+            student.setName((String) updates.get("name"));
+        }
+
+        if (updates.containsKey("age")) {
+            student.setAge((Integer) updates.get("age"));
+        }
+
+        if (updates.containsKey("email")) {
+            student.setEmail((String) updates.get("email"));
+        }
+
+        StudentModel updated = repository.save(student);
+
+        return new StudentResponseDto(
+                updated.getId(),
+                updated.getName(),
+                updated.getAge(),
+                updated.getEmail()
+        );
+    }
 }

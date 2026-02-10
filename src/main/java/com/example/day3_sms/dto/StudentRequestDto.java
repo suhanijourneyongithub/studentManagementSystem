@@ -19,7 +19,7 @@ public class StudentRequestDto {
 
     @Min(value = 5, message = "Age can't be less than 5")
     @Max(value = 90, message = "Age can't be more than 90")
-    private int age;
+    private Integer age;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email can't be blank")
