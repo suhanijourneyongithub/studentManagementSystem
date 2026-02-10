@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET = "my-secret-code-289-important-and-cant-be-disclosed";
+    private static final String SECRET = "";
 
     private final Key key = Keys.hmacShaKeyFor(
             SECRET.getBytes(StandardCharsets.UTF_8)
